@@ -5,10 +5,10 @@
  */
 package de.hsbo.fbg.hlnug.view;
 
+import de.hsbo.fbg.hlnug.model.GeoFileTableModel;
 import de.hsbo.fbg.hlnug.view.tooltabs.ClarNotationToolTab;
 import de.hsbo.fbg.hlnug.view.tooltabs.ToolTabPane;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.BorderFactory;
@@ -25,6 +25,10 @@ import javax.swing.ScrollPaneConstants;
  * @author Moritz Wollenhaupt <moritz.wollenhaupt@hs-bochum.de>
  */
 public class MainWindow {
+    
+    private JButton btnAdd, btnClear;
+    private GeoFileTableModel tableModel;
+    private JTable fileTable;
 
     public MainWindow() {
         initMainWindow();
@@ -39,23 +43,25 @@ public class MainWindow {
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
         // init first level panel
-//        JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JPanel mainPanel = new JPanel(new BorderLayout());
         // init second level panels
         JPanel leftPanel = new JPanel(new BorderLayout());
         JPanel rightPanel = new JPanel(new BorderLayout());
         // init TableView for leftPanel
-        JTable fileTable = new JTable();
+        tableModel = new GeoFileTableModel();
+        fileTable = new JTable(tableModel);
         // do table modification
-
+        fileTable.getColumnModel().getColumn(0).setCellRenderer(new GeoFileTableCellRenderer(fileTable));
+        fileTable.getColumnModel().getColumn(1).setCellRenderer(new GeoFileTableCellRenderer(fileTable));
+        fileTable.getColumnModel().getColumn(2).setCellRenderer(new GeoFileTableCellRenderer(fileTable));
         // make table scrollable as needed
         JScrollPane scrollableTable = new JScrollPane(fileTable);
         scrollableTable.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollableTable.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         // init buttonbar for insert/delete/.. table data
         JPanel buttonBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnAdd = new JButton("add");
-        JButton btnClear = new JButton("clear");
+        btnAdd = new JButton("add");
+        btnClear = new JButton("clear");
         // init TabPane for arranging tools
         ToolTabPane tabPane = new ToolTabPane();
         // here: add tabs!
@@ -83,5 +89,25 @@ public class MainWindow {
         rightPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
     }
+
+    public JButton getBtnAdd() {
+        return btnAdd;
+    }
+
+    public JButton getBtnClear() {
+        return btnClear;
+    }
+
+    public JTable getFileTable() {
+        return fileTable;
+    }
+
+    public GeoFileTableModel getTableModel() {
+        return tableModel;
+    }
+    
+    
+    
+    
 
 }
