@@ -15,6 +15,9 @@ import javax.swing.JLabel;
  */
 public class ClarNotationToolTab extends AbstractToolTab {
     
+    private JCheckBox dip, dipDir, strike, compassDir;
+    private JButton btnRun;
+    
     public ClarNotationToolTab(String title, Icon icon, String tip) {
         super(title, icon, tip);
     }
@@ -27,16 +30,16 @@ public class ClarNotationToolTab extends AbstractToolTab {
         // init label
         JLabel info = new JLabel("Was soll berechnet werden?");
         // init checkboxes
-        JCheckBox dip = new JCheckBox("DIP");
-        JCheckBox dipDir = new JCheckBox("DIP DIRECTION");
-        JCheckBox strike = new JCheckBox("STRIKE");
-        JCheckBox compassDir = new JCheckBox("HIMMELSRICHTUNG");
+        dip = new JCheckBox("DIP");
+        dipDir = new JCheckBox("DIP DIRECTION");
+        strike = new JCheckBox("STRIKE");
+        compassDir = new JCheckBox("HIMMELSRICHTUNG");
         //set preselections
         dip.setSelected(true);
         dipDir.setSelected(true);
         strike.setSelected(true);
         //init button
-        JButton btnRun = new JButton("OK..");
+        btnRun = new JButton("OK..");
         
         // arrange components
         gbc.anchor = GridBagConstraints.LINE_START;
@@ -68,8 +71,26 @@ public class ClarNotationToolTab extends AbstractToolTab {
         gbc.gridx = 1;
         gbc.gridy = 5;
         add(btnRun, gbc);
-        
-        
+    }
+
+    public JCheckBox getDip() {
+        return dip;
+    }
+
+    public JCheckBox getDipDir() {
+        return dipDir;
+    }
+
+    public JCheckBox getStrike() {
+        return strike;
+    }
+
+    public JCheckBox getCompassDir() {
+        return compassDir;
+    }
+
+    public JButton getBtnRun() {
+        return btnRun;
     }
     
     

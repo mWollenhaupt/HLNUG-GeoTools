@@ -32,6 +32,13 @@ public class GeoFileObject {
     public int getIdx() {
         return idx;
     }
+
+    @Override
+    public String toString() {
+        return "GeoFileObject[type="+getType()+", path="+getPath()+", name="+getName()+"]";
+    }
+    
+    
     
     
     

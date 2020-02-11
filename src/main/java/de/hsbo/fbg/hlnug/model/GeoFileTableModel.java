@@ -10,7 +10,7 @@ import javax.swing.table.AbstractTableModel;
 public class GeoFileTableModel extends AbstractTableModel {
     
     private List<GeoFileObject> data;
-    private final String[] columnNames = {"Type", "File", "Identifier"};
+    private final String[] columnNames = {"Typ", "Datei", "Objekt"};
     private final Class[] classes = {String.class, String.class, String.class};
     
     public GeoFileTableModel() {
@@ -52,6 +52,10 @@ public class GeoFileTableModel extends AbstractTableModel {
     
     public void addRow(GeoFileObject entry) {
         data.add(entry);   
+    }
+
+    public void removeRow(int selectedRow) {
+        data.remove(selectedRow);
     }
     
     

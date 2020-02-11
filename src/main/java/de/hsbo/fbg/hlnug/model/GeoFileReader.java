@@ -12,11 +12,11 @@ import org.n52.v3d.triturus.geologic.importers.IoGocadTSurfReader;
  */
 public class GeoFileReader {
 
-    private final String VWELL = "VIRTUAL WELL";
-    private final String RWELL = "REAL WELL";
-    private final String RAWWELL = "RAW WELL";
-    private final String TSURF = "TSURF";
-    private final String SHP = "SHAPE";
+    public static final String VWELL = "VIRTUAL WELL";
+    public static final String RWELL = "REAL WELL";
+    public static final String RAWWELL = "RAW WELL";
+    public static final String TSURF = "TSURF";
+    public static final String SHP = "SHAPE";
 
     private List<GeoFileObject> objects;
 

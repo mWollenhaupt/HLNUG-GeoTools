@@ -1,6 +1,8 @@
 
 package de.hsbo.fbg.hlnug.controller;
 
+import de.hsbo.fbg.hlnug.model.GeoFileObject;
+import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -27,6 +29,22 @@ public class GeoFileChooserFactory {
         FileNameExtensionFilter filter = new FileNameExtensionFilter(ext, extensions);
         fileChooser.setFileFilter(filter);
         
+        return fileChooser;
+    }
+    
+    public static JFileChooser getSaveFileDialog(String title, String[] extensions, GeoFileObject selection) {
+        JFileChooser fileChooser = new JFileChooser();
+        String path = selection.getPath();
+        int endIdx = path.lastIndexOf("\\");
+        path = path.substring(0, endIdx);
+        fileChooser.setSelectedFile(new File(path+"/"+selection.getName()+"."+extensions[0]));
+        fileChooser.setDialogTitle(title);
+        String ext = "";
+        for(String e : extensions) {
+            ext += "*."+e+";";
+        }
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(ext, extensions);
+        fileChooser.setFileFilter(filter);
         
         return fileChooser;
     }

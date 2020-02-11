@@ -26,9 +26,11 @@ import javax.swing.ScrollPaneConstants;
  */
 public class MainWindow {
     
-    private JButton btnAdd, btnClear;
+    private JButton btnAdd, btnClear, btnRemove;
     private GeoFileTableModel tableModel;
     private JTable fileTable;
+    private ClarNotationToolTab clarNotationTab;
+    private JFrame mainFrame;
 
     public MainWindow() {
         initMainWindow();
@@ -36,7 +38,7 @@ public class MainWindow {
 
     private void initMainWindow() {
         // init the frame
-        JFrame mainFrame = new JFrame("HLNUG-GeoTools");
+        mainFrame = new JFrame("HLNUG-GeoTools");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setPreferredSize(new Dimension(840, 480));
         mainFrame.pack();
@@ -51,26 +53,30 @@ public class MainWindow {
         tableModel = new GeoFileTableModel();
         fileTable = new JTable(tableModel);
         // do table modification
-        fileTable.getColumnModel().getColumn(0).setCellRenderer(new GeoFileTableCellRenderer(fileTable));
-        fileTable.getColumnModel().getColumn(1).setCellRenderer(new GeoFileTableCellRenderer(fileTable));
-        fileTable.getColumnModel().getColumn(2).setCellRenderer(new GeoFileTableCellRenderer(fileTable));
+//        fileTable.getColumnModel().getColumn(0).setCellRenderer(new GeoFileTableCellRenderer(fileTable));
+//        fileTable.getColumnModel().getColumn(1).setCellRenderer(new GeoFileTableCellRenderer(fileTable));
+//        fileTable.getColumnModel().getColumn(2).setCellRenderer(new GeoFileTableCellRenderer(fileTable));
+        fileTable.setDefaultRenderer(Object.class, new GeoFileTableCellRenderer(fileTable));
         // make table scrollable as needed
         JScrollPane scrollableTable = new JScrollPane(fileTable);
         scrollableTable.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollableTable.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         // init buttonbar for insert/delete/.. table data
         JPanel buttonBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        btnAdd = new JButton("add");
-        btnClear = new JButton("clear");
+        btnAdd = new JButton("Hinzufügen");
+        btnClear = new JButton("Alles entfernen");
+        btnRemove = new JButton("Selektion entfernen");
         // init TabPane for arranging tools
         ToolTabPane tabPane = new ToolTabPane();
         // here: add tabs!
-        tabPane.addTab(new ClarNotationToolTab("Clarwerte", null, "Hier werden Clarwerte berechnet!"));
+        clarNotationTab = new ClarNotationToolTab("Clarwerte", null, "Hier werden Clarwerte berechnet!");
+        tabPane.addTab(clarNotationTab);
         
         // init logo and info
         JLabel infoLabel = new JLabel("Version 0.1", IconManager.HLNUG_LOGO, 0);
         // add the initialized components onto their panels
         buttonBar.add(btnAdd);
+        buttonBar.add(btnRemove);
         buttonBar.add(btnClear);
         leftPanel.add(scrollableTable, BorderLayout.CENTER);
         leftPanel.add(buttonBar, BorderLayout.SOUTH);
@@ -98,6 +104,10 @@ public class MainWindow {
         return btnClear;
     }
 
+    public JButton getBtnRemove() {
+        return btnRemove;
+    }
+
     public JTable getFileTable() {
         return fileTable;
     }
@@ -105,6 +115,18 @@ public class MainWindow {
     public GeoFileTableModel getTableModel() {
         return tableModel;
     }
+
+    public ClarNotationToolTab getClarNotationTab() {
+        return clarNotationTab;
+    }
+
+    public JFrame getMainFrame() {
+        return mainFrame;
+    }
+    
+    
+    
+    
     
     
     
