@@ -3,6 +3,7 @@ package de.hsbo.fbg.hlnug.controller;
 import de.hsbo.fbg.hlnug.model.GeoFileExtensions;
 import de.hsbo.fbg.hlnug.model.GeoFileObject;
 import de.hsbo.fbg.hlnug.model.GeoFileReader;
+import de.hsbo.fbg.hlnug.view.FeedbackFrame;
 import de.hsbo.fbg.hlnug.view.MainWindow;
 import de.hsbo.fbg.hlnug.view.tooltabs.ClarNotationToolTab;
 import java.io.IOException;
@@ -84,6 +85,9 @@ public class ClarNotationTabController {
                     boolean dipDir = cnTab.getDipDir().isSelected();
                     boolean strike = cnTab.getStrike().isSelected();
                     boolean compassDir = cnTab.getCompassDir().isSelected();
+                    //create feedbackframe for user response
+                    FeedbackFrame fb = new FeedbackFrame(mainWindow.getMainFrame());
+                    fb.start();
                     // start reading TSURF data
                     IoGocadTSurfReader reader = new IoGocadTSurfReader();
                     GmSimpleTINFeature surf = reader.read(fileToRead).get(selection.getIdx());
@@ -96,8 +100,10 @@ public class ClarNotationTabController {
                         shpWriter.buildFeatureType();
                         shpWriter.createPolygonZFeatures(surf);
                         shpWriter.writeShapeFile(fileToSave);
+                        fb.stopSuccessful();
                     } catch (IOException | T3dNotYetImplException | T3dException | FactoryException ex) {
                         Logger.getLogger(ClarNotationTabController.class.getName()).log(Level.SEVERE, null, ex);
+                        fb.stopUnuccessful();
                     }
 
                 }

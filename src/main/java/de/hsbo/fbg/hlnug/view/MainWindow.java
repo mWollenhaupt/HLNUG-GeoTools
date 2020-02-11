@@ -25,7 +25,7 @@ import javax.swing.ScrollPaneConstants;
  * @author Moritz Wollenhaupt <moritz.wollenhaupt@hs-bochum.de>
  */
 public class MainWindow {
-    
+
     private JButton btnAdd, btnClear, btnRemove;
     private GeoFileTableModel tableModel;
     private JTable fileTable;
@@ -52,11 +52,10 @@ public class MainWindow {
         // init TableView for leftPanel
         tableModel = new GeoFileTableModel();
         fileTable = new JTable(tableModel);
-        // do table modification
-//        fileTable.getColumnModel().getColumn(0).setCellRenderer(new GeoFileTableCellRenderer(fileTable));
-//        fileTable.getColumnModel().getColumn(1).setCellRenderer(new GeoFileTableCellRenderer(fileTable));
-//        fileTable.getColumnModel().getColumn(2).setCellRenderer(new GeoFileTableCellRenderer(fileTable));
         fileTable.setDefaultRenderer(Object.class, new GeoFileTableCellRenderer(fileTable));
+        fileTable.getColumnModel().getColumn(0).setPreferredWidth(80);
+        fileTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+        fileTable.getColumnModel().getColumn(2).setPreferredWidth(200);
         // make table scrollable as needed
         JScrollPane scrollableTable = new JScrollPane(fileTable);
         scrollableTable.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -71,7 +70,7 @@ public class MainWindow {
         // here: add tabs!
         clarNotationTab = new ClarNotationToolTab("Clarwerte", null, "Hier werden Clarwerte berechnet!");
         tabPane.addTab(clarNotationTab);
-        
+
         // init logo and info
         JLabel infoLabel = new JLabel("Version 0.1", IconManager.HLNUG_LOGO, 0);
         // add the initialized components onto their panels
@@ -123,13 +122,5 @@ public class MainWindow {
     public JFrame getMainFrame() {
         return mainFrame;
     }
-    
-    
-    
-    
-    
-    
-    
-    
 
 }
