@@ -19,6 +19,7 @@ import org.n52.v3d.triturus.geologic.exporters.IoShapeWriter;
 import org.n52.v3d.triturus.geologic.exporters.util.ClarNotationShapeFileAttribute;
 import org.n52.v3d.triturus.geologic.exporters.util.ShapeFileAttribute;
 import org.n52.v3d.triturus.geologic.importers.IoGocadTSurfReader;
+import org.n52.v3d.triturus.geologic.util.CRSRecommender;
 import org.n52.v3d.triturus.gisimplm.GmSimpleTINFeature;
 import org.opengis.referencing.FactoryException;
 
@@ -91,12 +92,13 @@ public class ClarNotationTabController {
                     // start reading TSURF data
                     IoGocadTSurfReader reader = new IoGocadTSurfReader();
                     GmSimpleTINFeature surf = reader.read(fileToRead).get(selection.getIdx());
+                    String epsg = CRSRecommender.recommendEPSG(surf.envelope());
                     IoShapeWriter shpWriter = new IoShapeWriter();
                     ClarNotationShapeFileAttribute attribute = new ClarNotationShapeFileAttribute(dip, dipDir, strike, compassDir);
                     List<ShapeFileAttribute> attributes = new ArrayList<>();
                     attributes.add(attribute);
                     try {
-                        shpWriter.initFeatureType(IoShapeWriter.MULTI_POLYGON, "31467", attributes);
+                        shpWriter.initFeatureType(IoShapeWriter.MULTI_POLYGON, epsg, attributes);
                         shpWriter.buildFeatureType();
                         shpWriter.createPolygonZFeatures(surf);
                         shpWriter.writeShapeFile(fileToSave);
