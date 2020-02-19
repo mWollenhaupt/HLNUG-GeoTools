@@ -3,7 +3,7 @@ package de.hsbo.fbg.hlnug.controller;
 import de.hsbo.fbg.hlnug.model.GeoFileExtensions;
 import de.hsbo.fbg.hlnug.model.GeoFileObject;
 import de.hsbo.fbg.hlnug.model.GeoFileReader;
-import de.hsbo.fbg.hlnug.view.FeedbackFrame;
+import de.hsbo.fbg.hlnug.view.LoggingPanel;
 import de.hsbo.fbg.hlnug.view.MainWindow;
 import de.hsbo.fbg.hlnug.view.tooltabs.ClarNotationToolTab;
 import java.io.IOException;
@@ -29,10 +29,12 @@ import org.opengis.referencing.FactoryException;
 public class ClarNotationTabController {
 
     private MainWindow mainWindow;
+    private LoggingPanel logPanel;
     private ClarNotationToolTab cnTab;
 
     public ClarNotationTabController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
+        this.logPanel = mainWindow.getLogPanel();
         this.cnTab = mainWindow.getClarNotationTab();
         initController();
     }
@@ -53,21 +55,14 @@ public class ClarNotationTabController {
                 int[] rows = mainWindow.getFileTable().getSelectedRows();
                 // do some input checks
                 if (rows.length != 1) {
-                    JOptionPane.showMessageDialog(mainWindow.getMainFrame(),
-                            "Die Ausführung dieses Tools erfordert die Selektion genau eines TSURF-Objektes.",
-                            "Selektion ungültig",
-                            JOptionPane.ERROR_MESSAGE);
+                    logPanel.errorLog("Die Ausführung dieses Tools erfordert die Selektion genau eines TSURF-Objektes!");
                     return;
                 }
                 GeoFileObject selection = (GeoFileObject) mainWindow.getFileTable().getValueAt(rows[0], 0);
                 if (!(selection.getType() == GeoFileReader.TSURF)) {
-                    JOptionPane.showMessageDialog(mainWindow.getMainFrame(),
-                            "Bitte wähle ein Objekt vom Typ TSURF.",
-                            "Selektion ungültig",
-                            JOptionPane.ERROR_MESSAGE);
+                    logPanel.errorLog("Bitte wähle ein Objekt vom Typ TSURF!");
                     return;
                 }
-                System.out.println(selection + " " + selection.getIdx());
                 // choose new file path
                 JFileChooser fileChooser = GeoFileChooserFactory.getSaveFileDialog(
                         "Bitte Speicherpfad auswählen",
@@ -87,8 +82,7 @@ public class ClarNotationTabController {
                     boolean strike = cnTab.getStrike().isSelected();
                     boolean compassDir = cnTab.getCompassDir().isSelected();
                     //create feedbackframe for user response
-                    FeedbackFrame fb = new FeedbackFrame(mainWindow.getMainFrame());
-                    fb.start();
+                    logPanel.startCalculationFeedback("Clarwertberechnung angestoßen..");
                     // start reading TSURF data
                     IoGocadTSurfReader reader = new IoGocadTSurfReader();
                     GmSimpleTINFeature surf = reader.read(fileToRead).get(selection.getIdx());
@@ -102,10 +96,10 @@ public class ClarNotationTabController {
                         shpWriter.buildFeatureType();
                         shpWriter.createPolygonZFeatures(surf);
                         shpWriter.writeShapeFile(fileToSave);
-                        fb.stopSuccessful();
+                        logPanel.stopCalculationFeedback("Clarwertberechnung erfolgreich!");
                     } catch (IOException | T3dNotYetImplException | T3dException | FactoryException ex) {
                         Logger.getLogger(ClarNotationTabController.class.getName()).log(Level.SEVERE, null, ex);
-                        fb.stopUnuccessful();
+                        logPanel.stopCalculationFeedback("Bei der Clarwertberechnung ist ein Fehler aufgetreten!");
                     }
 
                 }

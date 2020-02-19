@@ -9,8 +9,10 @@ import de.hsbo.fbg.hlnug.model.GeoFileTableModel;
 import de.hsbo.fbg.hlnug.view.tooltabs.ClarNotationToolTab;
 import de.hsbo.fbg.hlnug.view.tooltabs.ToolTabPane;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,7 +20,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -31,6 +36,7 @@ public class MainWindow {
     private JTable fileTable;
     private ClarNotationToolTab clarNotationTab;
     private JFrame mainFrame;
+    private LoggingPanel logPanel;
 
     public MainWindow() {
         initMainWindow();
@@ -87,6 +93,17 @@ public class MainWindow {
 
         mainPanel.add(leftPanel, BorderLayout.CENTER);
         mainPanel.add(rightPanel, BorderLayout.EAST);
+        
+        
+//        JPanel logPanel = new JPanel(new BorderLayout());
+//        logPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new LineBorder(new Color(190, 190, 190), 2)));
+//        JTextArea area = new JTextArea("Lorem Ipsum\nLorem lorem");
+//        area.setMargin(new Insets(5, 5, 5, 5));
+//        area.setBackground(new Color(210, 210, 210));
+        logPanel = new LoggingPanel();
+//        logPanel.add(area, BorderLayout.CENTER);
+        mainPanel.add(logPanel, BorderLayout.SOUTH);
+        
         mainFrame.add(mainPanel);
 
         // beautify
@@ -122,5 +139,11 @@ public class MainWindow {
     public JFrame getMainFrame() {
         return mainFrame;
     }
+
+    public LoggingPanel getLogPanel() {
+        return logPanel;
+    }
+    
+    
 
 }

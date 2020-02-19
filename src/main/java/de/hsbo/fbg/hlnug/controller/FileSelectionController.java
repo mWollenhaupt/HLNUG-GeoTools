@@ -3,7 +3,7 @@ package de.hsbo.fbg.hlnug.controller;
 import de.hsbo.fbg.hlnug.model.GeoFileExtensions;
 import de.hsbo.fbg.hlnug.model.GeoFileObject;
 import de.hsbo.fbg.hlnug.model.GeoFileReader;
-import de.hsbo.fbg.hlnug.model.GeoFileTableModel;
+import de.hsbo.fbg.hlnug.view.LoggingPanel;
 import de.hsbo.fbg.hlnug.view.MainWindow;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -14,9 +14,11 @@ import javax.swing.JFileChooser;
 public class FileSelectionController {
 
     private MainWindow mainWindow;
+    private LoggingPanel logPanel;
 
     public FileSelectionController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
+        logPanel = mainWindow.getLogPanel();
         initController();
     }
 
@@ -27,12 +29,13 @@ public class FileSelectionController {
     }
 
     private void add() {
-        JFileChooser fileChooser = GeoFileChooserFactory.getLoadFileDialog("Select your data!",
+        JFileChooser fileChooser = GeoFileChooserFactory.getLoadFileDialog("Wähle einzulesende Daten aus!",
                 new String[]{GeoFileExtensions.TS,
                     GeoFileExtensions.WL,
                     GeoFileExtensions.SHP,
                     GeoFileExtensions.XLSX});
         if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            logPanel.appendLogString("Ausgewählte Dateien werden eingelesen..");
             File[] selectedFiles = fileChooser.getSelectedFiles();
             for (int i = 0; i < selectedFiles.length; i++) {
                 GeoFileReader reader = new GeoFileReader(selectedFiles[i].getAbsolutePath());
@@ -41,6 +44,7 @@ public class FileSelectionController {
                 }
                 mainWindow.getFileTable().updateUI();
             }
+            logPanel.appendLogString("Dateien erfolgreich eingelesen!");
         }
 
     }
@@ -49,6 +53,7 @@ public class FileSelectionController {
         mainWindow.getTableModel().removeAllElements();
         mainWindow.getFileTable().updateUI();
         mainWindow.getFileTable().clearSelection();
+        logPanel.clearLog();
     }
 
     private void remove() {
@@ -59,6 +64,12 @@ public class FileSelectionController {
             }
         }
         mainWindow.getFileTable().updateUI();
+        mainWindow.getFileTable().clearSelection();
+        if (mainWindow.getTableModel().getRowCount() == 0) {
+            logPanel.clearLog();
+        } else {
+            logPanel.appendLogString("Selektierte Datei(en) wurden entfernt!");
+        }
 
     }
 
