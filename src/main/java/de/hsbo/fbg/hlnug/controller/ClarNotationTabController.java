@@ -83,10 +83,15 @@ public class ClarNotationTabController {
                     boolean strike = cnTab.getStrike().isSelected();
                     boolean compassDir = cnTab.getCompassDir().isSelected();
                     //create feedbackframe for user response
-                    logPanel.startCalculationFeedback("Clarwertberechnung angestoßen..");
                     // start reading TSURF data
                     IoGocadTSurfReader reader = new IoGocadTSurfReader();
                     GmSimpleTINFeature surf = reader.read(fileToRead).get(selection.getIdx());
+                    int numTriangles = ((GmSimpleTINGeometry) surf.getGeometry()).numberOfTriangles();
+                    logPanel.appendLogString("Anzahl zu verarbeitender Dreiecke: " + numTriangles);
+                    if(numTriangles > 300000) {
+                        logPanel.appendLogString("WARNUNG! \tDie Berechnung von mehr als 300000 Dreiecken ist zeit- und speicherintensiv!");
+                    }
+                    logPanel.startCalculationFeedback("Clarwertberechnung angestoßen..");
                     String epsg = CRSRecommender.recommendEPSG(surf.envelope());
                     IoShapeWriter shpWriter = new IoShapeWriter();
                     ClarNotationShapeFileAttribute attribute = new ClarNotationShapeFileAttribute(dip, dipDir, strike, compassDir);

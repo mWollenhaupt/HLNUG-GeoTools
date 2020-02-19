@@ -35,7 +35,7 @@ public class MainWindow {
         // init the frame
         mainFrame = new JFrame("HLNUG-GeoTools");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setPreferredSize(new Dimension(840, 480));
+        mainFrame.setPreferredSize(new Dimension(840, 530));
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);

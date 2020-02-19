@@ -38,15 +38,15 @@ public class LoggingPanel extends JPanel implements Runnable {
     private void initLoggingPanel() {
         setLayout(new BorderLayout());
         setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new LineBorder(new Color(190, 190, 190), 3)));
-        logArea = new JTextArea(3, 20);
+        logArea = new JTextArea(4, 20);
         logArea.setLineWrap(true);
         logArea.setWrapStyleWord(true);
         logArea.setEnabled(false);
         logArea.setDisabledTextColor(logColor);
         logArea.setMargin(new Insets(5, 5, 5, 5));
         logArea.setBackground(new Color(220, 220, 220));
-        DefaultCaret caret = (DefaultCaret) logArea.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+//        DefaultCaret caret = (DefaultCaret) logArea.getCaret();
+//        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         clearLog();
         JScrollPane scrollPane = new JScrollPane(logArea);
@@ -65,14 +65,17 @@ public class LoggingPanel extends JPanel implements Runnable {
 
     public void clearLog() {
         setLogString("> [LOG] Fügen Sie Dateien zum Bearbeiten hinzu!\n");
+        logArea.setCaretPosition(logArea.getDocument().getLength());
     }
 
     public void setLogString(String message) {
         logArea.setText(message);
+        logArea.setCaretPosition(logArea.getDocument().getLength());
     }
 
     public void appendLogString(String message) {
         logArea.append("> [LOG] " + message + "\n");
+        logArea.setCaretPosition(logArea.getDocument().getLength());
     }
 
     public void startCalculationFeedback(String message) {
