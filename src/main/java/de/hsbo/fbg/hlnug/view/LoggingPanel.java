@@ -64,7 +64,7 @@ public class LoggingPanel extends JPanel implements Runnable {
     }
 
     public void clearLog() {
-        setLogString("> Fügen Sie Dateien zum Bearbeiten hinzu!\n");
+        setLogString("> [LOG] Fügen Sie Dateien zum Bearbeiten hinzu!\n");
     }
 
     public void setLogString(String message) {
@@ -72,7 +72,7 @@ public class LoggingPanel extends JPanel implements Runnable {
     }
 
     public void appendLogString(String message) {
-        logArea.append("> " + message + "\n");
+        logArea.append("> [LOG] " + message + "\n");
     }
 
     public void startCalculationFeedback(String message) {

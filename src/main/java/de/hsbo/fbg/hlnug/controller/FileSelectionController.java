@@ -36,15 +36,22 @@ public class FileSelectionController {
                     GeoFileExtensions.XLSX});
         if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             logPanel.appendLogString("Ausgewählte Dateien werden eingelesen..");
-            File[] selectedFiles = fileChooser.getSelectedFiles();
-            for (int i = 0; i < selectedFiles.length; i++) {
-                GeoFileReader reader = new GeoFileReader(selectedFiles[i].getAbsolutePath());
-                for (GeoFileObject obj : reader.getObjects()) {
-                    mainWindow.getTableModel().addRow(obj);
+            Thread readingThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    File[] selectedFiles = fileChooser.getSelectedFiles();
+                    for (int i = 0; i < selectedFiles.length; i++) {
+                        GeoFileReader reader = new GeoFileReader(selectedFiles[i].getAbsolutePath());
+                        for (GeoFileObject obj : reader.getObjects()) {
+                            mainWindow.getTableModel().addRow(obj);
+                        }
+                    }
+                    mainWindow.getFileTable().updateUI();
+                    logPanel.appendLogString("Dateien erfolgreich eingelesen!");
                 }
-                mainWindow.getFileTable().updateUI();
-            }
-            logPanel.appendLogString("Dateien erfolgreich eingelesen!");
+            });
+            readingThread.setDaemon(true);
+            readingThread.start();
         }
 
     }
