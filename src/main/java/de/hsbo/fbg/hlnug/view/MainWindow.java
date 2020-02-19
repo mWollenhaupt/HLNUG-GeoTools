@@ -77,6 +77,7 @@ public class MainWindow {
 
         rightPanel.add(tabPane, BorderLayout.CENTER);
         JPanel infoWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        infoLabel.setBorder(BorderFactory.createEmptyBorder(10, 5, 0, 5));
         infoWrapper.add(infoLabel);
         rightPanel.add(infoWrapper, BorderLayout.SOUTH);
 

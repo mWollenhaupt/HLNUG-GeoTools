@@ -115,16 +115,21 @@ public class LoggingPanel extends JPanel implements Runnable {
      *
      * @param message The message to be printed
      */
-    public void stopCalculationFeedback(String message) {
+    public void stopCalculationFeedback(boolean success, String message) {
         calcRunning = false;
-        appendLogString(message);
+        if (success) {
+            appendLogString(message);
+        }
+        else {
+            errorLog(message);
+        }
     }
 
     /**
      * method that updates the last log line only. Used by feedback frame only
-     * 
+     *
      * @param message The message to be printed
-     * @throws BadLocationException 
+     * @throws BadLocationException
      */
     private void updateLog(String message) throws BadLocationException {
         Document document = logArea.getDocument();

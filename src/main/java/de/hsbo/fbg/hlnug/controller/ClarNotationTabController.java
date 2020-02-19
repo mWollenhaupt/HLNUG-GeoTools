@@ -119,10 +119,11 @@ public class ClarNotationTabController {
                         shpWriter.createPolygonZFeatures(surf);
                         // open a new datastore and write all geometries and their attributes to an file
                         shpWriter.writeShapeFile(fileToSave);
-                        logPanel.stopCalculationFeedback("Clarwertberechnung erfolgreich!");
+                        logPanel.stopCalculationFeedback(true, "Clarwertberechnung erfolgreich!");
                     } catch (IOException | T3dNotYetImplException | T3dException | FactoryException ex) {
                         Logger.getLogger(ClarNotationTabController.class.getName()).log(Level.SEVERE, null, ex);
-                        logPanel.stopCalculationFeedback("Bei der Clarwertberechnung ist ein Fehler aufgetreten!");
+                        logPanel.stopCalculationFeedback(false, "Bei der Clarwertberechnung ist ein Fehler aufgetreten!");
+                        logPanel.appendLogString(ex.getMessage());
                     }
 
                 }

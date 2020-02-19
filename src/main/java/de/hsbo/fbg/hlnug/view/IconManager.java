@@ -11,6 +11,6 @@ public class IconManager {
     
     
     
-    public static final ImageIcon HLNUG_LOGO = new ImageIcon("res/icon_hlnug.png");
+    public static final ImageIcon HLNUG_LOGO = new ImageIcon("src/main/resources/icon_hlnug.png");
     
 }
