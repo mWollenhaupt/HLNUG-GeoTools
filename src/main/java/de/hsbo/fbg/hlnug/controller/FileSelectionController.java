@@ -13,8 +13,8 @@ import javax.swing.JFileChooser;
  */
 public class FileSelectionController {
 
-    private MainWindow mainWindow;
-    private LoggingPanel logPanel;
+    private MainWindow mainWindow;              // reference to mainWindow
+    private LoggingPanel logPanel;              // reference to mainWindow's logging area
 
     public FileSelectionController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -22,26 +22,39 @@ public class FileSelectionController {
         initController();
     }
 
+    /**
+     * here: initialize all Listeners do not forget to execute long term
+     * calculations in an own thread, otherwise the GUI will block any following
+     * input
+     */
     private void initController() {
         mainWindow.getBtnAdd().addActionListener(e -> add());
         mainWindow.getBtnClear().addActionListener(e -> clear());
         mainWindow.getBtnRemove().addActionListener(e -> remove());
     }
 
+    /**
+     * handels clickling the "hinzufügen" buttons action
+     */
     private void add() {
+        // create new fileChooser with filter for preferred file extensions
         JFileChooser fileChooser = GeoFileChooserFactory.getLoadFileDialog("Wähle einzulesende Daten aus!",
                 new String[]{GeoFileExtensions.TS,
                     GeoFileExtensions.WL,
                     GeoFileExtensions.SHP,
                     GeoFileExtensions.XLSX});
+        // open dialog and check for correct input
         if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             logPanel.appendLogString("Ausgewählte Dateien werden eingelesen..");
+            // read all selected files. Since it's possible to select many files at once, 
+            // this may take a while. So run it in an own thread
             Thread readingThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     File[] selectedFiles = fileChooser.getSelectedFiles();
                     for (int i = 0; i < selectedFiles.length; i++) {
                         GeoFileReader reader = new GeoFileReader(selectedFiles[i].getAbsolutePath());
+                        // Gocad files for example can handle multiple geometry objects in one file, so iterate over them
                         for (GeoFileObject obj : reader.getObjects()) {
                             mainWindow.getTableModel().addRow(obj);
                         }
@@ -56,6 +69,9 @@ public class FileSelectionController {
 
     }
 
+    /**
+     * clear file table
+     */
     private void clear() {
         mainWindow.getTableModel().removeAllElements();
         mainWindow.getFileTable().updateUI();
@@ -63,6 +79,9 @@ public class FileSelectionController {
         logPanel.clearLog();
     }
 
+    /**
+     * removes the selected file from file table
+     */
     private void remove() {
         int[] selectedRows = mainWindow.getFileTable().getSelectedRows();
         if (selectedRows.length > 0) {

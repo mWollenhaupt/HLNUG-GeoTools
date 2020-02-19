@@ -5,18 +5,22 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 /**
+ * The in the GUI shown file table model
+ * 
  * @author Moritz Wollenhaupt <moritz.wollenhaupt@hs-bochum.de>
  */
 public class GeoFileTableModel extends AbstractTableModel {
     
-    private List<GeoFileObject> data;
-    private final String[] columnNames = {"Typ", "Datei", "Objekt"};
-    private final Class[] classes = {String.class, String.class, String.class};
+    private List<GeoFileObject> data;                                           // The shown data
+    private final String[] columnNames = {"Typ", "Datei", "Objekt"};            // Columnnames
+    private final Class[] classes = {String.class, String.class, String.class}; // Column data types
     
     public GeoFileTableModel() {
         data = new ArrayList<>();
     }
 
+    // All operations should be self-explanatory
+    
     @Override
     public int getRowCount() {
         return data.size();

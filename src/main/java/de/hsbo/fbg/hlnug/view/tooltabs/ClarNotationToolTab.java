@@ -1,16 +1,15 @@
 package de.hsbo.fbg.hlnug.view.tooltabs;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
-import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 
 /**
+ * Concrete implementation of a ToolTab. This tab contains the ClarNotation tool
+ * 
  * @author Moritz Wollenhaupt <moritz.wollenhaupt@hs-bochum.de>
  */
 public class ClarNotationToolTab extends AbstractToolTab {
@@ -22,6 +21,9 @@ public class ClarNotationToolTab extends AbstractToolTab {
         super(title, icon, tip);
     }
 
+    /**
+     * here you have to initialize the gui elements
+     */
     @Override
     public void showGui() {
         // init this tab with GridBafLayout

@@ -1,7 +1,6 @@
 package de.hsbo.fbg.hlnug.view;
 
 import de.hsbo.fbg.hlnug.model.GeoFileObject;
-import de.hsbo.fbg.hlnug.model.GeoFileTableModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -9,21 +8,22 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 /**
+ * Class for better visualization of the table model. Enables, e.g, the
+ * visualization of the selection
+ *
  * @author Moritz Wollenhaupt <moritz.wollenhaupt@hs-bochum.de>
  */
 public class GeoFileTableCellRenderer extends JLabel implements TableCellRenderer {
-    
+
     private int hoveredRow;
     private Color bgSelectedColor;
     private JTable table;
-    
+
     public GeoFileTableCellRenderer(JTable table) {
         this.table = table;
         hoveredRow = -1;
@@ -61,15 +61,13 @@ public class GeoFileTableCellRenderer extends JLabel implements TableCellRendere
             setForeground(table.getForeground());
             setBackground(table.getBackground());
         }
-        
-        
-        
+
         setEnabled(table.isEnabled());
         setFont(table.getFont());
         setOpaque(true);
         return this;
     }
-    
+
     private class TableMouseListener implements MouseListener, MouseMotionListener {
 
         public TableMouseListener() {
@@ -108,6 +106,5 @@ public class GeoFileTableCellRenderer extends JLabel implements TableCellRendere
         }
 
     }
-    
-    
+
 }

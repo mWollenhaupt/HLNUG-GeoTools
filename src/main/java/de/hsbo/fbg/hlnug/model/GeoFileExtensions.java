@@ -5,6 +5,10 @@ package de.hsbo.fbg.hlnug.model;
  */
 public class GeoFileExtensions {
     
+    /**
+     * Codelist class with HLNUG-Geologic-Tools valid file extensions
+     */
+    
     public static final String TS = "ts";
     public static final String WL = "wl";
     public static final String XLSX = "xlsx";

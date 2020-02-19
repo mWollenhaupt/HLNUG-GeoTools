@@ -17,14 +17,16 @@ import javax.swing.text.Document;
 import javax.swing.text.Element;
 
 /**
+ * An expaneded JPanel class that holds an JTextArea, used for logging.
+ *
  * @author Moritz Wollenhaupt <moritz.wollenhaupt@hs-bochum.de>
  */
 public class LoggingPanel extends JPanel implements Runnable {
 
-    private JTextArea logArea;
-    private Thread calcInProgressThread;
-    private boolean calcRunning;
-    private Color logColor;
+    private JTextArea logArea;              // logging area
+    private Thread calcInProgressThread;    // Used for user feedback
+    private boolean calcRunning;            // true while long term calculations running
+    private Color logColor;                 // font color
 
     public LoggingPanel() {
         super();
@@ -35,6 +37,9 @@ public class LoggingPanel extends JPanel implements Runnable {
         initLoggingPanel();
     }
 
+    /**
+     * initializes GUI elements
+     */
     private void initLoggingPanel() {
         setLayout(new BorderLayout());
         setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new LineBorder(new Color(190, 190, 190), 3)));
@@ -45,8 +50,6 @@ public class LoggingPanel extends JPanel implements Runnable {
         logArea.setDisabledTextColor(logColor);
         logArea.setMargin(new Insets(5, 5, 5, 5));
         logArea.setBackground(new Color(220, 220, 220));
-//        DefaultCaret caret = (DefaultCaret) logArea.getCaret();
-//        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         clearLog();
         JScrollPane scrollPane = new JScrollPane(logArea);
@@ -56,39 +59,73 @@ public class LoggingPanel extends JPanel implements Runnable {
         add(scrollPane, BorderLayout.CENTER);
 
     }
-    
+
+    /**
+     * used for error message logging
+     *
+     * @param message The message to be printed
+     */
     public void errorLog(String message) {
-        logArea.setDisabledTextColor(Color.RED);
-        appendLogString("[Error]\t"+message);
-        logArea.setDisabledTextColor(logColor);
+        logArea.append("> [Error]\t" + message + "\n");
     }
 
+    /**
+     * clears and re-initializes the log
+     */
     public void clearLog() {
         setLogString("> [LOG] Fügen Sie Dateien zum Bearbeiten hinzu!\n");
         logArea.setCaretPosition(logArea.getDocument().getLength());
     }
 
+    /**
+     * overwrites all log input with the given message
+     *
+     * @param message The message to be printed
+     */
     public void setLogString(String message) {
         logArea.setText(message);
         logArea.setCaretPosition(logArea.getDocument().getLength());
     }
 
+    /**
+     * appends the given message as a new log line
+     *
+     * @param message The message to be printed
+     */
     public void appendLogString(String message) {
         logArea.append("> [LOG] " + message + "\n");
         logArea.setCaretPosition(logArea.getDocument().getLength());
     }
 
+    /**
+     * starts a new feedback thread, so the user can see, that a long term
+     * calculation is still in progress and prints the given message
+     *
+     * @param message The message to be printed
+     */
     public void startCalculationFeedback(String message) {
         appendLogString(message);
         calcRunning = true;
         calcInProgressThread.start();
     }
 
+    /**
+     * stops the feedback thread after long term calculation and prints the
+     * given message
+     *
+     * @param message The message to be printed
+     */
     public void stopCalculationFeedback(String message) {
         calcRunning = false;
         appendLogString(message);
     }
 
+    /**
+     * method that updates the last log line only. Used by feedback frame only
+     * 
+     * @param message The message to be printed
+     * @throws BadLocationException 
+     */
     private void updateLog(String message) throws BadLocationException {
         Document document = logArea.getDocument();
         Element root = document.getDefaultRootElement();
@@ -101,15 +138,18 @@ public class LoggingPanel extends JPanel implements Runnable {
 
     }
 
+    /**
+     * Feedback threads' logic
+     */
     @Override
     public void run() {
         try {
             int i = 0;
-            String[] calcStates = {"Berechnung läuft.", "Berechnung läuft..", "Berechnung läuft...", "Berechnung läuft.."};
+            String[] calcStates = {"[LOG] Berechnung läuft.", "[LOG] Berechnung läuft..", "[LOG] Berechnung läuft...", "[LOG] Berechnung läuft.."};
             appendLogString(calcStates[i]);
             while (calcRunning) {
                 i++;
-                updateLog(calcStates[i%calcStates.length]);
+                updateLog(calcStates[i % calcStates.length]);
                 Thread.sleep(250);
             }
         } catch (InterruptedException | BadLocationException ex) {

@@ -83,14 +83,8 @@ public class MainWindow {
         mainPanel.add(leftPanel, BorderLayout.CENTER);
         mainPanel.add(rightPanel, BorderLayout.EAST);
         
-        
-//        JPanel logPanel = new JPanel(new BorderLayout());
-//        logPanel.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(5, 5, 5, 5), new LineBorder(new Color(190, 190, 190), 2)));
-//        JTextArea area = new JTextArea("Lorem Ipsum\nLorem lorem");
-//        area.setMargin(new Insets(5, 5, 5, 5));
-//        area.setBackground(new Color(210, 210, 210));
+        // Create the logging panel and add it at the application's south
         logPanel = new LoggingPanel();
-//        logPanel.add(area, BorderLayout.CENTER);
         mainPanel.add(logPanel, BorderLayout.SOUTH);
         
         mainFrame.add(mainPanel);

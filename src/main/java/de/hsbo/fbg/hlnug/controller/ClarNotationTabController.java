@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import org.n52.v3d.triturus.core.T3dException;
 import org.n52.v3d.triturus.core.T3dNotYetImplException;
 import org.n52.v3d.triturus.geologic.exporters.IoShapeWriter;
@@ -25,13 +24,15 @@ import org.n52.v3d.triturus.gisimplm.GmSimpleTINGeometry;
 import org.opengis.referencing.FactoryException;
 
 /**
+ * Controler class for ClarNotationToolTab that handels user input.
+ *
  * @author Moritz Wollenhaupt <moritz.wollenhaupt@hs-bochum.de>
  */
 public class ClarNotationTabController {
 
-    private MainWindow mainWindow;
-    private LoggingPanel logPanel;
-    private ClarNotationToolTab cnTab;
+    private MainWindow mainWindow;           // reference to mainWindow
+    private LoggingPanel logPanel;           // reference to mainWindow's logging area
+    private ClarNotationToolTab cnTab;      // referecne to mainWindow'S ClarNotationToolTab
 
     public ClarNotationTabController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -40,13 +41,21 @@ public class ClarNotationTabController {
         initController();
     }
 
+    /**
+     * here: initialize all Listeners do not forget to execute long term
+     * calculations in an own thread, otherwise the GUI will block any following
+     * input
+     */
     private void initController() {
         cnTab.getBtnRun().addActionListener(e -> exec());
 
     }
 
+    /**
+     * starts calculating the clar notation values, writes the selected geometry
+     * in a new shape file and adds the calculated values as attributes
+     */
     private void exec() {
-
         // run execution in thread for non blocking gui
         Thread thread;
         thread = new Thread(new Runnable() {
@@ -82,25 +91,33 @@ public class ClarNotationTabController {
                     boolean dipDir = cnTab.getDipDir().isSelected();
                     boolean strike = cnTab.getStrike().isSelected();
                     boolean compassDir = cnTab.getCompassDir().isSelected();
-                    //create feedbackframe for user response
+                    // create feedbackframe for user response
                     // start reading TSURF data
                     IoGocadTSurfReader reader = new IoGocadTSurfReader();
                     GmSimpleTINFeature surf = reader.read(fileToRead).get(selection.getIdx());
                     int numTriangles = ((GmSimpleTINGeometry) surf.getGeometry()).numberOfTriangles();
                     logPanel.appendLogString("Anzahl zu verarbeitender Dreiecke: " + numTriangles);
-                    if(numTriangles > 300000) {
+                    if (numTriangles > 300000) {
                         logPanel.appendLogString("WARNUNG! \tDie Berechnung von mehr als 300000 Dreiecken ist zeit- und speicherintensiv!");
                     }
                     logPanel.startCalculationFeedback("Clarwertberechnung angestoßen..");
+                    // auto match the CRS by extent of given geometry
                     String epsg = CRSRecommender.recommendEPSG(surf.envelope());
+                    // initalize a new shape writer
                     IoShapeWriter shpWriter = new IoShapeWriter();
+                    // initialize the attributes of the shape file. 
+                    // you have to write your own ShapeFileAttributeClass, derived from Triturus' abstract ShapeFileAttribute class.
                     ClarNotationShapeFileAttribute attribute = new ClarNotationShapeFileAttribute(dip, dipDir, strike, compassDir);
+                    // Add them to a collection (more than one specific attribute type is possible in this way)
                     List<ShapeFileAttribute> attributes = new ArrayList<>();
                     attributes.add(attribute);
                     try {
+                        // initialize and build the FeatureType you want to use by giving the Geom-Type, the CRS as an EPSG-String and the attribute(columns)
                         shpWriter.initFeatureType(IoShapeWriter.MULTI_POLYGON, epsg, attributes);
                         shpWriter.buildFeatureType();
+                        // create file's geometrie and calc attributes
                         shpWriter.createPolygonZFeatures(surf);
+                        // open a new datastore and write all geometries and their attributes to an file
                         shpWriter.writeShapeFile(fileToSave);
                         logPanel.stopCalculationFeedback("Clarwertberechnung erfolgreich!");
                     } catch (IOException | T3dNotYetImplException | T3dException | FactoryException ex) {
