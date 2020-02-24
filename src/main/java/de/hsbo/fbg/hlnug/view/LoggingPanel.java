@@ -1,5 +1,6 @@
 package de.hsbo.fbg.hlnug.view;
 
+import de.hsbo.fbg.hlnug.util.ToolExecutionThreadPool;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Insets;
@@ -27,13 +28,14 @@ public class LoggingPanel extends JPanel implements Runnable {
     private Thread calcInProgressThread;    // Used for user feedback
     private boolean calcRunning;            // true while long term calculations running
     private Color logColor;                 // font color
+    
+    private ToolExecutionThreadPool threadPool;
 
     public LoggingPanel() {
         super();
+        this.threadPool = new ToolExecutionThreadPool();
         logColor = new Color(110, 110, 110);
         calcRunning = false;
-        calcInProgressThread = new Thread(this);
-        calcInProgressThread.setDaemon(true);
         initLoggingPanel();
     }
 
@@ -46,6 +48,8 @@ public class LoggingPanel extends JPanel implements Runnable {
         logArea = new JTextArea(4, 20);
         logArea.setLineWrap(true);
         logArea.setWrapStyleWord(true);
+        DefaultCaret caret = (DefaultCaret) logArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         logArea.setEnabled(false);
         logArea.setDisabledTextColor(logColor);
         logArea.setMargin(new Insets(5, 5, 5, 5));
@@ -106,7 +110,7 @@ public class LoggingPanel extends JPanel implements Runnable {
     public void startCalculationFeedback(String message) {
         appendLogString(message);
         calcRunning = true;
-        calcInProgressThread.start();
+        threadPool.execute(this);
     }
 
     /**

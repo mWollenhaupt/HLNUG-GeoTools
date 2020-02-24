@@ -3,6 +3,7 @@ package de.hsbo.fbg.hlnug.view;
 import de.hsbo.fbg.hlnug.model.GeoFileTableModel;
 import de.hsbo.fbg.hlnug.view.tooltabs.ClarNotationToolTab;
 import de.hsbo.fbg.hlnug.view.tooltabs.ToolTabPane;
+import de.hsbo.fbg.hlnug.view.tooltabs.VirtualRedrillTab;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -23,9 +24,11 @@ public class MainWindow {
     private JButton btnAdd, btnClear, btnRemove;
     private GeoFileTableModel tableModel;
     private JTable fileTable;
-    private ClarNotationToolTab clarNotationTab;
     private JFrame mainFrame;
     private LoggingPanel logPanel;
+    
+    private ClarNotationToolTab clarNotationTab;
+    private VirtualRedrillTab virtualRedrillTab;
 
     public MainWindow() {
         initMainWindow();
@@ -63,8 +66,10 @@ public class MainWindow {
         // init TabPane for arranging tools
         ToolTabPane tabPane = new ToolTabPane();
         // here: add tabs!
-        clarNotationTab = new ClarNotationToolTab("Clarwerte", null, "Hier werden Clarwerte berechnet!");
+        clarNotationTab = new ClarNotationToolTab("Clarwerte", null, "");
         tabPane.addTab(clarNotationTab);
+        virtualRedrillTab = new VirtualRedrillTab("Virtuelle Nachbohrung", null, "");
+        tabPane.addTab(virtualRedrillTab);
 
         // init logo and info
         JLabel infoLabel = new JLabel("Version 0.1", IconManager.HLNUG_LOGO, 0);
@@ -118,6 +123,10 @@ public class MainWindow {
 
     public ClarNotationToolTab getClarNotationTab() {
         return clarNotationTab;
+    }
+
+    public VirtualRedrillTab getVirtualRedrillTab() {
+        return virtualRedrillTab;
     }
 
     public JFrame getMainFrame() {

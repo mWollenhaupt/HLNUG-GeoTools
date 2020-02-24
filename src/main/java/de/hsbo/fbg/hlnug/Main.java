@@ -2,6 +2,7 @@ package de.hsbo.fbg.hlnug;
 
 import de.hsbo.fbg.hlnug.controller.ClarNotationTabController;
 import de.hsbo.fbg.hlnug.controller.FileSelectionController;
+import de.hsbo.fbg.hlnug.controller.VirtualRedrillTabController;
 import de.hsbo.fbg.hlnug.view.MainWindow;
 import javax.swing.SwingUtilities;
 
@@ -26,6 +27,7 @@ public class Main {
                 MainWindow mw = new MainWindow();
                 FileSelectionController selectionController = new FileSelectionController(mw);
                 ClarNotationTabController clarNotationController = new ClarNotationTabController(mw);
+                VirtualRedrillTabController virtualRedrillController = new VirtualRedrillTabController(mw);
             }
         });
     }

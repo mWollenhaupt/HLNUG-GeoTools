@@ -17,9 +17,10 @@ import org.n52.v3d.triturus.geologic.importers.IoGocadTSurfReader;
 public class GeoFileReader {
 
     // Identifier for File-Types used by the HLNUG
-    public static final String VWELL = "VIRTUAL WELL";
-    public static final String RWELL = "REAL WELL";
-    public static final String RAWWELL = "RAW WELL";
+//    public static final String VWELL = "VIRTUAL WELL";
+//    public static final String RWELL = "REAL WELL";
+//    public static final String RAWWELL = "RAW WELL";
+    public static final String CSV_WELL = "CSV / WELL";
     public static final String TSURF = "TSURF";
     public static final String SHP = "SHAPE";
 
@@ -64,18 +65,18 @@ public class GeoFileReader {
                     }
                 }
                 break;
-            case GeoFileExtensions.WL:
-                break;
-            case GeoFileExtensions.SHP:
-                GeoFileObject shp = new GeoFileObject(SHP, path, new File(path).getName(), 0);
-                objects.add(shp);
-                break;
-            case GeoFileExtensions.XLSX:
-                GeoFileObject xlsx = new GeoFileObject(RAWWELL, path, new File(path).getName(), 0);
-                objects.add(xlsx);
+//            case GeoFileExtensions.WL:
+//                break;
+//            case GeoFileExtensions.SHP:
+//                GeoFileObject shp = new GeoFileObject(SHP, path, new File(path).getName(), 0);
+//                objects.add(shp);
+//                break;
+            case GeoFileExtensions.CSV:
+                GeoFileObject csv = new GeoFileObject(CSV_WELL, path, new File(path).getName().replaceAll(".csv", ""), 0);
+                objects.add(csv);
                 break;
             default:
-                return; // TODO: Throw exception
+                break; // TODO: Throw exception
         }
     }
 

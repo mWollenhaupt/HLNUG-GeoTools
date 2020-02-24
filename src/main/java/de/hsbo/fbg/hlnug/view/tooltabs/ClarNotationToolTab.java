@@ -26,7 +26,7 @@ public class ClarNotationToolTab extends AbstractToolTab {
      */
     @Override
     public void showGui() {
-        // init this tab with GridBafLayout
+        // init this tab with GridBagLayout
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         // init label
