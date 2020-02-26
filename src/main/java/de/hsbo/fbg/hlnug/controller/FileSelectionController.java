@@ -42,10 +42,9 @@ public class FileSelectionController {
     private void add() {
         // create new fileChooser with filter for preferred file extensions
         JFileChooser fileChooser = GeoFileChooserFactory.getLoadFileDialog("Wähle einzulesende Daten aus!",
-                new String[]{GeoFileExtensions.TS,
-//                    GeoFileExtensions.WL,
-//                    GeoFileExtensions.SHP,
-                    GeoFileExtensions.CSV});
+                new String[]{GeoFileExtensions.get(GeoFileExtensions.SKUA_GOCAD_TSURF),
+                            GeoFileExtensions.get(GeoFileExtensions.CSV),
+                            GeoFileExtensions.get(GeoFileExtensions.SKUA_GOCAD_WELL)});
         // open dialog and check for correct input
         if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             logPanel.appendLogString("Ausgewählte Dateien werden eingelesen..");

@@ -2,8 +2,9 @@ package de.hsbo.fbg.hlnug.view;
 
 import de.hsbo.fbg.hlnug.model.GeoFileTableModel;
 import de.hsbo.fbg.hlnug.view.tooltabs.ClarNotationToolTab;
+import de.hsbo.fbg.hlnug.view.tooltabs.TinCorrelationToolTab;
 import de.hsbo.fbg.hlnug.view.tooltabs.ToolTabPane;
-import de.hsbo.fbg.hlnug.view.tooltabs.VirtualRedrillTab;
+import de.hsbo.fbg.hlnug.view.tooltabs.VirtualRedrillToolTab;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -28,7 +29,8 @@ public class MainWindow {
     private LoggingPanel logPanel;
     
     private ClarNotationToolTab clarNotationTab;
-    private VirtualRedrillTab virtualRedrillTab;
+    private VirtualRedrillToolTab virtualRedrillTab;
+    private TinCorrelationToolTab tinCorrelationTab;
 
     public MainWindow() {
         initMainWindow();
@@ -68,8 +70,10 @@ public class MainWindow {
         // here: add tabs!
         clarNotationTab = new ClarNotationToolTab("Clarwerte", null, "");
         tabPane.addTab(clarNotationTab);
-        virtualRedrillTab = new VirtualRedrillTab("Virtuelle Nachbohrung", null, "");
+        virtualRedrillTab = new VirtualRedrillToolTab("Virtuelle Nachbohrung", null, "");
         tabPane.addTab(virtualRedrillTab);
+        tinCorrelationTab = new TinCorrelationToolTab("TIN-Korrelation", null, "");
+        tabPane.addTab(tinCorrelationTab);
 
         // init logo and info
         JLabel infoLabel = new JLabel("Version 0.1", IconManager.HLNUG_LOGO, 0);
@@ -125,7 +129,7 @@ public class MainWindow {
         return clarNotationTab;
     }
 
-    public VirtualRedrillTab getVirtualRedrillTab() {
+    public VirtualRedrillToolTab getVirtualRedrillTab() {
         return virtualRedrillTab;
     }
 
@@ -136,6 +140,12 @@ public class MainWindow {
     public LoggingPanel getLogPanel() {
         return logPanel;
     }
+
+    public TinCorrelationToolTab getTinCorrelationTab() {
+        return tinCorrelationTab;
+    }
+    
+    
     
     
 

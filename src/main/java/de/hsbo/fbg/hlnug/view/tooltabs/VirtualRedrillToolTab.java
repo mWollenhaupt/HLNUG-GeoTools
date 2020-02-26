@@ -9,11 +9,11 @@ import javax.swing.JButton;
  * @author Moritz Wollenhaupt <moritz.wollenhaupt@hs-bochum.de>
  */
 
-public class VirtualRedrillTab extends AbstractToolTab {
+public class VirtualRedrillToolTab extends AbstractToolTab {
     
     private JButton btnRun;
 
-    public VirtualRedrillTab(String title, Icon icon, String tip) {
+    public VirtualRedrillToolTab(String title, Icon icon, String tip) {
         super(title, icon, tip);
     }
 

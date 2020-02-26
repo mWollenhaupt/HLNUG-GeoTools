@@ -65,25 +65,25 @@ public class ClarNotationTabController {
             int[] rows = mainWindow.getFileTable().getSelectedRows();
             // do some input checks
             if (rows.length != 1) {
-                logPanel.errorLog("Die Ausführung dieses Tools erfordert die Selektion genau eines TSURF-Objektes!");
+                logPanel.errorLog("Die Ausführung dieses Tools erfordert die Selektion genau eines Objekts vom Typ 'ts' (Gocad-TSurf)!");
                 return;
             }
             GeoFileObject selection = (GeoFileObject) mainWindow.getFileTable().getValueAt(rows[0], 0);
-            if (!(selection.getType() == GeoFileReader.TSURF)) {
-                logPanel.errorLog("Bitte wähle ein Objekt vom Typ TSURF!");
+            if (!(selection.getType().equals(GeoFileExtensions.get(GeoFileExtensions.SKUA_GOCAD_TSURF)))) {
+                logPanel.errorLog("Bitte wähle ein Objekt vom Typ 'ts' (Gocad-TSurf)!");
                 return;
             }
             // choose new file path
             JFileChooser fileChooser = GeoFileChooserFactory.getSaveFileDialog(
                     "Bitte Speicherpfad auswählen",
-                    new String[]{GeoFileExtensions.SHP},
+                    new String[]{GeoFileExtensions.ESRI_SHAPEFILE},
                     selection);
             // if new file accepted
             if (fileChooser.showSaveDialog(mainWindow.getMainFrame()) == JFileChooser.APPROVE_OPTION) {
                 String fileToSave = fileChooser.getSelectedFile().getAbsolutePath();
                 // check for file extension
-                if (!fileToSave.endsWith(".shp")) {
-                    fileToSave += ".shp";
+                if (!fileToSave.endsWith("." + GeoFileExtensions.ESRI_SHAPEFILE)) {
+                    fileToSave += "." + GeoFileExtensions.ESRI_SHAPEFILE;
                 }
                 String fileToRead = selection.getPath();
                 // query user selections

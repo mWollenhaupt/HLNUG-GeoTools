@@ -6,7 +6,7 @@ import de.hsbo.fbg.hlnug.model.GeoFileReader;
 import de.hsbo.fbg.hlnug.util.ToolExecutionThreadPool;
 import de.hsbo.fbg.hlnug.view.LoggingPanel;
 import de.hsbo.fbg.hlnug.view.MainWindow;
-import de.hsbo.fbg.hlnug.view.tooltabs.VirtualRedrillTab;
+import de.hsbo.fbg.hlnug.view.tooltabs.VirtualRedrillToolTab;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFileChooser;
@@ -18,7 +18,7 @@ public class VirtualRedrillTabController {
 
     private MainWindow mainWindow;           // reference to mainWindow
     private LoggingPanel logPanel;           // reference to mainWindow's logging area
-    private VirtualRedrillTab vrTab;         // referecne to mainWindow's VirtualRedrillTab
+    private VirtualRedrillToolTab vrTab;         // referecne to mainWindow's VirtualRedrillTab
 
     private ToolExecutionThreadPool threadPool;
 
@@ -50,7 +50,7 @@ public class VirtualRedrillTabController {
             List<GeoFileObject> objects = new ArrayList<>();
             for (int row : rows) {
                 GeoFileObject selection = (GeoFileObject) mainWindow.getFileTable().getValueAt(row, 0);
-                if (!(selection.getType().equals(GeoFileReader.CSV_WELL))) {
+                if (!(selection.getType().equals(GeoFileExtensions.CSV))) {
                     logPanel.errorLog("Bitte nur CSV-Dateien angeben!");
                     return;
                 } else {
