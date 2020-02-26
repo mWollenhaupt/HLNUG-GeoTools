@@ -50,7 +50,7 @@ public class VirtualRedrillTabController {
             List<GeoFileObject> objects = new ArrayList<>();
             for (int row : rows) {
                 GeoFileObject selection = (GeoFileObject) mainWindow.getFileTable().getValueAt(row, 0);
-                if (!(selection.getType().equals(GeoFileExtensions.CSV))) {
+                if (!(selection.getType().equals(GeoFileExtensions.get(GeoFileExtensions.CSV)))) {
                     logPanel.errorLog("Bitte nur CSV-Dateien angeben!");
                     return;
                 } else {
@@ -61,7 +61,7 @@ public class VirtualRedrillTabController {
             // choose new file path
             JFileChooser fileChooser = GeoFileChooserFactory.getSaveFileDialog(
                     "Bitte Speicherpfad auswählen",
-                    new String[]{GeoFileExtensions.CSV},
+                    new String[]{GeoFileExtensions.get(GeoFileExtensions.CSV)},
                     objects.get(0));
             System.out.println(objects.get(0));
             if (fileChooser.showSaveDialog(mainWindow.getMainFrame()) == JFileChooser.APPROVE_OPTION) {

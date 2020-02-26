@@ -3,12 +3,13 @@ package de.hsbo.fbg.hlnug.view;
 import de.hsbo.fbg.hlnug.util.ToolExecutionThreadPool;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Insets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -16,155 +17,141 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 
 /**
- * An expaneded JPanel class that holds an JTextArea, used for logging.
- *
  * @author Moritz Wollenhaupt <moritz.wollenhaupt@hs-bochum.de>
  */
-public class LoggingPanel extends JPanel implements Runnable {
+public class LoggingPanel extends JPanel {
 
-    private JTextArea logArea;              // logging area
-    private Thread calcInProgressThread;    // Used for user feedback
-    private boolean calcRunning;            // true while long term calculations running
-    private Color logColor;                 // font color
-    
+    private JTextPane logArea;
     private ToolExecutionThreadPool threadPool;
+    private boolean calcRunning;
+    private DefaultCaret caret;
+    private SimpleAttributeSet set;
+
+    private enum LogType {
+        LOG, ERROR, WARNING, RUNNING
+    }
+    private Color cLog, cError, cWarning, cRunning;
 
     public LoggingPanel() {
         super();
         this.threadPool = new ToolExecutionThreadPool();
-        logColor = new Color(110, 110, 110);
-        calcRunning = false;
+        this.calcRunning = false;
+        this.cLog = new Color(27, 38, 44);
+        this.cRunning = new Color(15, 76, 129);
+        this.cError = new Color(237, 102, 99);
+        this.cWarning = new Color(255, 163, 114);
+        this.set = new SimpleAttributeSet();
         initLoggingPanel();
     }
 
-    /**
-     * initializes GUI elements
-     */
     private void initLoggingPanel() {
         setLayout(new BorderLayout());
         setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new LineBorder(new Color(190, 190, 190), 3)));
-        logArea = new JTextArea(4, 20);
-        logArea.setLineWrap(true);
-        logArea.setWrapStyleWord(true);
-        DefaultCaret caret = (DefaultCaret) logArea.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        logArea.setEnabled(false);
-        logArea.setDisabledTextColor(logColor);
+
+        logArea = new JTextPane();
+        logArea.setPreferredSize(new Dimension(logArea.getPreferredSize().width, 70));
+        logArea.setEditable(false);
         logArea.setMargin(new Insets(5, 5, 5, 5));
         logArea.setBackground(new Color(220, 220, 220));
+        this.caret = (DefaultCaret) logArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
-        clearLog();
         JScrollPane scrollPane = new JScrollPane(logArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         add(scrollPane, BorderLayout.CENTER);
 
+        clearLog();
     }
 
-    /**
-     * used for error message logging
-     *
-     * @param message The message to be printed
-     */
-    public void errorLog(String message) {
-        logArea.append("> [Error]\t" + message + "\n");
+    public void errorLog(String msg) {
+        appendToLogArea(msg, LogType.ERROR);
     }
 
-    /**
-     * clears and re-initializes the log
-     */
+    public void log(String msg) {
+        appendToLogArea(msg, LogType.LOG);
+    }
+
+    public void warningLog(String msg) {
+        appendToLogArea(msg, LogType.WARNING);
+    }
+
+    public void runningLog(String msg) {
+        appendToLogArea(msg, LogType.RUNNING);
+    }
+
+    private void appendToLogArea(String msg, LogType type) {
+        logArea.setEditable(true);
+        switch (type) {
+            case LOG:
+                msg = "\n[LOG]\t" + msg;
+                StyleConstants.setForeground(set, cLog);
+                break;
+            case ERROR:
+                msg = "\n[ERROR]\t" + msg;
+                StyleConstants.setForeground(set, cError);
+                break;
+            case WARNING:
+                msg = "\n[WARNING]\t" + msg;
+                StyleConstants.setForeground(set, cWarning);
+                break;
+            case RUNNING:
+                msg = "\n[RUNNING]\t" + msg;
+                StyleConstants.setForeground(set, cRunning);
+                break;
+            default:
+                break;
+        }
+        logArea.setCharacterAttributes(set, false);
+        logArea.replaceSelection(msg);
+        logArea.setEditable(false);
+    }
+
     public void clearLog() {
-        setLogString("> [LOG] Fügen Sie Dateien zum Bearbeiten hinzu!\n");
-        logArea.setCaretPosition(logArea.getDocument().getLength());
+        StyleConstants.setForeground(set, cLog);
+        logArea.setCharacterAttributes(set, false);
+        logArea.setText("[LOG]\tBitte Dateien zum bearbeiten einladen.");
     }
 
-    /**
-     * overwrites all log input with the given message
-     *
-     * @param message The message to be printed
-     */
-    public void setLogString(String message) {
-        logArea.setText(message);
-        logArea.setCaretPosition(logArea.getDocument().getLength());
-    }
-
-    /**
-     * appends the given message as a new log line
-     *
-     * @param message The message to be printed
-     */
-    public void appendLogString(String message) {
-        logArea.append("> [LOG] " + message + "\n");
-        logArea.setCaretPosition(logArea.getDocument().getLength());
-    }
-
-    /**
-     * starts a new feedback thread, so the user can see, that a long term
-     * calculation is still in progress and prints the given message
-     *
-     * @param message The message to be printed
-     */
-    public void startCalculationFeedback(String message) {
-        appendLogString(message);
-        calcRunning = true;
-        threadPool.execute(this);
-    }
-
-    /**
-     * stops the feedback thread after long term calculation and prints the
-     * given message
-     *
-     * @param message The message to be printed
-     */
-    public void stopCalculationFeedback(boolean success, String message) {
+    public void stopCalculationFeedback(boolean success, String msg) {
         calcRunning = false;
         if (success) {
-            appendLogString(message);
-        }
-        else {
-            errorLog(message);
+            log(msg);
+        } else {
+            errorLog(msg);
         }
     }
 
-    /**
-     * method that updates the last log line only. Used by feedback frame only
-     *
-     * @param message The message to be printed
-     * @throws BadLocationException
-     */
-    private void updateLog(String message) throws BadLocationException {
-        Document document = logArea.getDocument();
-        Element root = document.getDefaultRootElement();
-        int numLines = root.getElementCount();
-        Element content = root.getElement(numLines - 2);
-        int start = content.getStartOffset();
-        int end = content.getEndOffset();
-        document.remove(start, end - start - 2);
-        document.insertString(start, "> " + message, null);
-
-    }
-
-    /**
-     * Feedback threads' logic
-     */
-    @Override
-    public void run() {
-        try {
-            int i = 0;
-            String[] calcStates = {"[LOG] Berechnung läuft.", "[LOG] Berechnung läuft..", "[LOG] Berechnung läuft...", "[LOG] Berechnung läuft.."};
-            appendLogString(calcStates[i]);
-            while (calcRunning) {
-                i++;
-                updateLog(calcStates[i % calcStates.length]);
-                Thread.sleep(250);
+    public synchronized void startCalculationFeedback(String msg) {
+        log(msg);
+        calcRunning = true;
+        threadPool.execute(() -> {
+            try {
+                int i = 0;
+                String[] calcStates = {"Berechnung läuft.", "Berechnung läuft...", "Berechnung läuft.....", "Berechnung läuft..."};
+                runningLog(calcStates[i]);
+                long lastTime = System.currentTimeMillis();
+                while (calcRunning) {
+                    long newTime = System.currentTimeMillis();
+                    float delta = (newTime - lastTime) / 1000;
+                    if (delta >= 1) {
+                        i++;
+                        String content = logArea.getDocument().getText(0, logArea.getDocument().getLength());
+                        int lastLineBreak = content.lastIndexOf("\n");
+                        logArea.select(lastLineBreak, logArea.getDocument().getLength());
+                        runningLog(calcStates[i % calcStates.length]);
+                        lastTime = newTime;
+                    }
+                }
+            } catch (BadLocationException ex) {
+                Logger.getLogger(LoggingPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (InterruptedException | BadLocationException ex) {
-            Logger.getLogger(LoggingPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        });
     }
 
 }

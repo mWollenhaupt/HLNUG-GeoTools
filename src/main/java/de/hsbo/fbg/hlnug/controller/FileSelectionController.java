@@ -39,7 +39,7 @@ public class FileSelectionController {
     /**
      * handels clickling the "hinzufügen" buttons action
      */
-    private void add() {
+    private synchronized void add() {
         // create new fileChooser with filter for preferred file extensions
         JFileChooser fileChooser = GeoFileChooserFactory.getLoadFileDialog("Wähle einzulesende Daten aus!",
                 new String[]{GeoFileExtensions.get(GeoFileExtensions.SKUA_GOCAD_TSURF),
@@ -47,7 +47,7 @@ public class FileSelectionController {
                             GeoFileExtensions.get(GeoFileExtensions.SKUA_GOCAD_WELL)});
         // open dialog and check for correct input
         if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            logPanel.appendLogString("Ausgewählte Dateien werden eingelesen..");
+            logPanel.log("Ausgewählte Dateien werden eingelesen..");
             // read all selected files. Since it's possible to select many files at once, 
             // this may take a while. So run it in an own thread
             threadPool.execute(new Runnable() {
@@ -62,7 +62,7 @@ public class FileSelectionController {
                     }
                 }
                 mainWindow.getFileTable().updateUI();
-                logPanel.appendLogString("Dateien erfolgreich eingelesen!");
+                logPanel.log("Dateien erfolgreich eingelesen!");
                 }
             });
         }
@@ -72,7 +72,7 @@ public class FileSelectionController {
     /**
      * clear file table
      */
-    private void clear() {
+    private synchronized void clear() {
         mainWindow.getTableModel().removeAllElements();
         mainWindow.getFileTable().updateUI();
         mainWindow.getFileTable().clearSelection();
@@ -82,7 +82,7 @@ public class FileSelectionController {
     /**
      * removes the selected file from file table
      */
-    private void remove() {
+    private synchronized void remove() {
         int[] selectedRows = mainWindow.getFileTable().getSelectedRows();
         if(selectedRows.length == 0) {
             return;
@@ -97,7 +97,7 @@ public class FileSelectionController {
         if (mainWindow.getTableModel().getRowCount() == 0) {
             logPanel.clearLog();
         } else {
-            logPanel.appendLogString("Selektierte Datei(en) wurden entfernt!");
+            logPanel.log("Selektierte Datei(en) wurden entfernt!");
         }
 
     }

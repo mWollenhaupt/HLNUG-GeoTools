@@ -76,14 +76,14 @@ public class ClarNotationTabController {
             // choose new file path
             JFileChooser fileChooser = GeoFileChooserFactory.getSaveFileDialog(
                     "Bitte Speicherpfad auswählen",
-                    new String[]{GeoFileExtensions.ESRI_SHAPEFILE},
+                    new String[]{GeoFileExtensions.get(GeoFileExtensions.ESRI_SHAPEFILE)},
                     selection);
             // if new file accepted
             if (fileChooser.showSaveDialog(mainWindow.getMainFrame()) == JFileChooser.APPROVE_OPTION) {
                 String fileToSave = fileChooser.getSelectedFile().getAbsolutePath();
                 // check for file extension
-                if (!fileToSave.endsWith("." + GeoFileExtensions.ESRI_SHAPEFILE)) {
-                    fileToSave += "." + GeoFileExtensions.ESRI_SHAPEFILE;
+                if (!fileToSave.endsWith("." + GeoFileExtensions.get(GeoFileExtensions.ESRI_SHAPEFILE))) {
+                    fileToSave += "." + GeoFileExtensions.get(GeoFileExtensions.ESRI_SHAPEFILE);
                 }
                 String fileToRead = selection.getPath();
                 // query user selections
@@ -96,9 +96,9 @@ public class ClarNotationTabController {
                 IoGocadTSurfReader reader = new IoGocadTSurfReader();
                 GmSimpleTINFeature surf = reader.read(fileToRead).get(selection.getIdx());
                 int numTriangles = ((GmSimpleTINGeometry) surf.getGeometry()).numberOfTriangles();
-                logPanel.appendLogString("Anzahl zu verarbeitender Dreiecke: " + numTriangles);
+                logPanel.log("Anzahl zu verarbeitender Dreiecke: " + numTriangles);
                 if (numTriangles > 300000) {
-                    logPanel.appendLogString("WARNUNG! \tDie Berechnung von mehr als 300000 Dreiecken ist zeit- und speicherintensiv!");
+                    logPanel.warningLog("Die Berechnung von mehr als 300000 Dreiecken ist zeit- und speicherintensiv!");
                 }
                 logPanel.startCalculationFeedback("Clarwertberechnung angestoßen..");
                 // auto match the CRS by extent of given geometry
@@ -123,7 +123,7 @@ public class ClarNotationTabController {
                 } catch (IOException | T3dNotYetImplException | T3dException | FactoryException ex) {
                     Logger.getLogger(ClarNotationTabController.class.getName()).log(Level.SEVERE, null, ex);
                     logPanel.stopCalculationFeedback(false, "Bei der Clarwertberechnung ist ein Fehler aufgetreten!");
-                    logPanel.appendLogString(ex.getMessage());
+                    logPanel.log(ex.getMessage());
                 }
             }
         });
