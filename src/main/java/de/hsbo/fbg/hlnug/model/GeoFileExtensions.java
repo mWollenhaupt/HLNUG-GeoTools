@@ -26,8 +26,8 @@ public class GeoFileExtensions {
         extensions.put(SKUA_GOCAD_WELL, "wl");
         extensions.put(ESRI_SHAPEFILE, "shp");
         extensions.put(CSV, "csv");
-        extensions.put(ARC_INFO_ASCII_GRID, "");  // EXTENSION?
-        extensions.put(VTK_DATASET_FILE, "");     // EXTENSION?
+        extensions.put(ARC_INFO_ASCII_GRID, "asc");
+        extensions.put(VTK_DATASET_FILE, "vtk");
     }
     
     public static String get(String extension) {
