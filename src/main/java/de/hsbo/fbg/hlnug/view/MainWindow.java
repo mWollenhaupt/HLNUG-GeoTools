@@ -8,7 +8,12 @@ import de.hsbo.fbg.hlnug.view.tooltabs.VirtualRedrillToolTab;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,7 +32,7 @@ public class MainWindow {
     private JTable fileTable;
     private JFrame mainFrame;
     private LoggingPanel logPanel;
-    
+
     private ClarNotationToolTab clarNotationTab;
     private VirtualRedrillToolTab virtualRedrillTab;
     private TinCorrelationToolTab tinCorrelationTab;
@@ -76,7 +81,12 @@ public class MainWindow {
         tabPane.addTab(tinCorrelationTab);
 
         // init logo and info
-        JLabel infoLabel = new JLabel("Version 0.1", IconManager.HLNUG_LOGO, 0);
+        JLabel infoLabel = null;
+        try {
+            infoLabel = new JLabel("Version 0.1", new ImageIcon(ImageIO.read(getClass().getClassLoader().getResourceAsStream("icon_hlnug.png"))), 0);
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
         // add the initialized components onto their panels
         buttonBar.add(btnAdd);
         buttonBar.add(btnRemove);
@@ -86,17 +96,19 @@ public class MainWindow {
 
         rightPanel.add(tabPane, BorderLayout.CENTER);
         JPanel infoWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(10, 5, 0, 5));
-        infoWrapper.add(infoLabel);
+        if (infoLabel != null) {
+            infoLabel.setBorder(BorderFactory.createEmptyBorder(10, 5, 0, 5));
+            infoWrapper.add(infoLabel);
+        }
         rightPanel.add(infoWrapper, BorderLayout.SOUTH);
 
         mainPanel.add(leftPanel, BorderLayout.CENTER);
         mainPanel.add(rightPanel, BorderLayout.EAST);
-        
+
         // Create the logging panel and add it at the application's south
         logPanel = new LoggingPanel();
         mainPanel.add(logPanel, BorderLayout.SOUTH);
-        
+
         mainFrame.add(mainPanel);
 
         // beautify
@@ -144,9 +156,5 @@ public class MainWindow {
     public TinCorrelationToolTab getTinCorrelationTab() {
         return tinCorrelationTab;
     }
-    
-    
-    
-    
 
 }
