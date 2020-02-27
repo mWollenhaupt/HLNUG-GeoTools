@@ -104,7 +104,7 @@ public class ClarNotationTabController {
                 // auto match the CRS by extent of given geometry
                 String epsg = CRSRecommender.recommendEPSG(surf.envelope());
                 // initalize a new shape writer
-                IoShapeWriter shpWriter = new IoShapeWriter();
+                IoShapeWriter shpWriter = new IoShapeWriter(IoShapeWriter.TIN);
                 // initialize the attributes of the shape file.
                 // you have to write your own ShapeFileAttributeClass, derived from Triturus' abstract ShapeFileAttribute class.
                 ClarNotationShapeFileAttribute attribute = new ClarNotationShapeFileAttribute(dip, dipDir, strike, compassDir);
@@ -116,7 +116,7 @@ public class ClarNotationTabController {
                     shpWriter.initFeatureType(IoShapeWriter.MULTI_POLYGON, epsg, attributes);
                     shpWriter.buildFeatureType();
                     // create file's geometrie and calc attributes
-                    shpWriter.createPolygonZFeatures(surf);
+                    shpWriter.writeGeometry(surf);
                     // open a new datastore and write all geometries and their attributes to an file
                     shpWriter.writeShapeFile(fileToSave);
                     logPanel.stopCalculationFeedback(true, "Clarwertberechnung erfolgreich!");
